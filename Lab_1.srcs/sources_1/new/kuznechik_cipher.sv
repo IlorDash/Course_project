@@ -72,13 +72,12 @@ module kuznechik_cipher (
   assign data_key_result = trial_input_mux ^ round_key;
   
 
+
   // Non-Linear overlay
   logic [7:0] data_key_result_bytes [15:0];
   logic [7:0] data_non_linear_result[15:0];
 
-
   generate
-
     for (genvar i = 0; i < 16; i++) begin
       assign data_key_result_bytes[i] = data_key_result[((i+1)*8)-1:(i*8)];   //  convert bits to bytes for extracting nums from S box
       assign data_non_linear_result[i] = S_box_mem[data_key_result_bytes[i]];
@@ -100,22 +99,22 @@ module kuznechik_cipher (
   logic [7:0] data_galua_result[15:0];
 
   // 148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1
-  assign data_galua_result[15] = L_mul_148_mem[data_galua_in[0]];
-  assign data_galua_result[14] = L_mul_32_mem[data_galua_in[1]];
-  assign data_galua_result[13] = L_mul_133_mem[data_galua_in[2]];
-  assign data_galua_result[12] = L_mul_16_mem[data_galua_in[3]];
-  assign data_galua_result[11] = L_mul_194_mem[data_galua_in[4]];
-  assign data_galua_result[10] = L_mul_192_mem[data_galua_in[5]];
-  assign data_galua_result[9]  = data_galua_in[6];
-  assign data_galua_result[8]  = L_mul_251_mem[data_galua_in[7]];
-  assign data_galua_result[7]  = data_galua_in[8];
-  assign data_galua_result[6]  = L_mul_192_mem[data_galua_in[9]];
-  assign data_galua_result[5]  = L_mul_194_mem[data_galua_in[10]];
-  assign data_galua_result[4]  = L_mul_16_mem[data_galua_in[11]];
-  assign data_galua_result[3]  = L_mul_133_mem[data_galua_in[12]];
-  assign data_galua_result[2]  = L_mul_32_mem[data_galua_in[13]];
-  assign data_galua_result[1]  = L_mul_148_mem[data_galua_in[14]];
-  assign data_galua_result[0]  = data_galua_in[15];
+  assign data_galua_result[15] = L_mul_148_mem[data_galua_in[15]];
+  assign data_galua_result[14] = L_mul_32_mem[data_galua_in[14]];
+  assign data_galua_result[13] = L_mul_133_mem[data_galua_in[13]];
+  assign data_galua_result[12] = L_mul_16_mem[data_galua_in[12]];
+  assign data_galua_result[11] = L_mul_194_mem[data_galua_in[11]];
+  assign data_galua_result[10] = L_mul_192_mem[data_galua_in[10]];
+  assign data_galua_result[9]  = data_galua_in[9];
+  assign data_galua_result[8]  = L_mul_251_mem[data_galua_in[8]];
+  assign data_galua_result[7]  = data_galua_in[7];
+  assign data_galua_result[6]  = L_mul_192_mem[data_galua_in[6]];
+  assign data_galua_result[5]  = L_mul_194_mem[data_galua_in[5]];
+  assign data_galua_result[4]  = L_mul_16_mem[data_galua_in[4]];
+  assign data_galua_result[3]  = L_mul_133_mem[data_galua_in[3]];
+  assign data_galua_result[2]  = L_mul_32_mem[data_galua_in[2]];
+  assign data_galua_result[1]  = L_mul_148_mem[data_galua_in[1]];
+  assign data_galua_result[0]  = data_galua_in[0];
 
   logic [7:0] galua_summ;
 
@@ -133,15 +132,12 @@ module kuznechik_cipher (
       end
     end
 
-
-
     always_comb begin
       data_galua_shreg_next[15] = galua_summ;
       for (int i = 14; i >= 0; i--) begin
         data_galua_shreg_next[i] = data_galua_shreg_ff[i+1];
       end
     end
-
 
     for (genvar i = 0; i < 16; i++) begin
       always_ff @(posedge clk_i, negedge resetn_i) begin
