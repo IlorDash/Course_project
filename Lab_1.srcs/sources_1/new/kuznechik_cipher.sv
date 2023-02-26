@@ -39,9 +39,6 @@ module kuznechik_cipher (
     $readmemh("L_192.mem", L_mul_192_mem);
     $readmemh("L_194.mem", L_mul_194_mem);
     $readmemh("L_251.mem", L_mul_251_mem);
-
-    //round_num    = '0;
-    state = IDLE;
   end
 
 
@@ -75,7 +72,7 @@ module kuznechik_cipher (
 
   logic [127:0] trial_output;
 
-  assign trial_input_mux = (state = IDLE) ? data_i : trial_output;
+  assign trial_input_mux = (state == IDLE) ? data_i : trial_output;
 
   always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
