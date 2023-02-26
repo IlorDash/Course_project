@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="testbench_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="testbench" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="52000000fs"></ZoomStartTime>
+      <ZoomEndTime time="74780001fs"></ZoomEndTime>
+      <Cursor1Time time="65000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="228"></NameColumnWidth>
+      <ValueColumnWidth column_width="74"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="10" />
+   <wvobject fp_name="/testbench/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/resetn" type="logic">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/request" type="logic">
+      <obj_property name="ElementShortName">request</obj_property>
+      <obj_property name="ObjectShortName">request</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/ack" type="logic">
+      <obj_property name="ElementShortName">ack</obj_property>
+      <obj_property name="ObjectShortName">ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/data_i" type="array">
+      <obj_property name="ElementShortName">data_i[127:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[127:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="group33" type="group">
+      <obj_property name="label">DUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/testbench/DUT/state" type="array">
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="ElementShortName">state[2:0]</obj_property>
+         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+         <obj_property name="label">state[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/DUT/round_num" type="array">
+         <obj_property name="ElementShortName">round_num[3:0]</obj_property>
+         <obj_property name="ObjectShortName">round_num[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/DUT/lin_conv_num" type="array">
+         <obj_property name="ElementShortName">lin_conv_num[3:0]</obj_property>
+         <obj_property name="ObjectShortName">lin_conv_num[3:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/DUT/lin_conv_passed" type="logic">
+         <obj_property name="ElementShortName">lin_conv_passed</obj_property>
+         <obj_property name="ObjectShortName">lin_conv_passed</obj_property>
+      </wvobject>
+      <wvobject fp_name="group57" type="group">
+         <obj_property name="label">DEBUG</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject fp_name="/testbench/DUT/trial_input_mux" type="array">
+            <obj_property name="ElementShortName">trial_input_mux[127:0]</obj_property>
+            <obj_property name="ObjectShortName">trial_input_mux[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_key_result" type="array">
+            <obj_property name="ElementShortName">data_key_result[127:0]</obj_property>
+            <obj_property name="ObjectShortName">data_key_result[127:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_non_linear_result" type="array">
+            <obj_property name="ElementShortName">data_non_linear_result[15:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_non_linear_result[15:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_galua_in" type="array">
+            <obj_property name="ElementShortName">data_galua_in[15:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_galua_in[15:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_galua_result" type="array">
+            <obj_property name="ElementShortName">data_galua_result[15:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_galua_result[15:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/galua_summ" type="array">
+            <obj_property name="ElementShortName">galua_summ[7:0]</obj_property>
+            <obj_property name="ObjectShortName">galua_summ[7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_galua_shreg_next" type="array">
+            <obj_property name="ElementShortName">data_galua_shreg_next[15:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_galua_shreg_next[15:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/data_galua_shreg_ff" type="array">
+            <obj_property name="ElementShortName">data_galua_shreg_ff[15:0][7:0]</obj_property>
+            <obj_property name="ObjectShortName">data_galua_shreg_ff[15:0][7:0]</obj_property>
+         </wvobject>
+         <wvobject fp_name="/testbench/DUT/trial_output" type="array">
+            <obj_property name="ElementShortName">trial_output[127:0]</obj_property>
+            <obj_property name="ObjectShortName">trial_output[127:0]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+</wave_config>
