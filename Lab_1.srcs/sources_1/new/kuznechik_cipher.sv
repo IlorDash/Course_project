@@ -42,27 +42,34 @@ module kuznechik_cipher (
   end
 
 
-  logic [3:0] state;
+  assign valid_o = (state == FINISH);
+  assign data_o  = (state == FINISH) ? data_key_result : 0;
+  assign busy_o  = (state != IDLE);
+
+  logic [2:0] state;
   parameter IDLE = 0, KEY = 1, NON_LIN = 2, LIN = 3, FINISH = 4;
+
+  logic [3:0] lin_conv_num;
+  logic lin_conv_passed;
+  assign lin_conv_passed = (lin_conv_num == 15);
 
   // Moore machine
   always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
       state <= IDLE;
-      round_num <= 0;
     end else begin
-      if (KEY && (round_num == 10)) begin
-        state <= FINISH;
-      end else
       if (request_i && (state == IDLE)) begin
         state <= KEY;
+      end else if ((state == KEY) && (round_num == 9)) begin
+        state <= FINISH;
       end else if (state == KEY) begin
         state <= NON_LIN;
-      end else if (state == NON_LIN) begin
-        state <= LIN;  // 16 iters
-      end else if ((state == LIN) && (lin_conv_num == 15)) begin
+      end else if (state == NON_LIN) begin  // 16 iters
+        state <= LIN;
+      end else if ((state == LIN) && lin_conv_passed) begin
         state <= KEY;
-        round_num <= round_num + 1;
+      end else if (state == FINISH) begin
+        state <= IDLE;
       end
     end
   end
@@ -72,18 +79,22 @@ module kuznechik_cipher (
 
   logic [127:0] trial_output;
 
-  assign trial_input_mux = (state == IDLE) ? data_i : trial_output;
+  assign trial_input_mux = (round_num == 0) ? data_i : trial_output;
 
   always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
       round_num <= 0;
-    end else if (state == LIN) begin
+      lin_conv_num <= '0;
+    end else if (state == IDLE) begin
+      round_num <= '0;
+      lin_conv_num <= '0;
+    end else if ((state == LIN) && lin_conv_passed) begin
       round_num <= round_num + 1;
+      lin_conv_num <= '0;
+    end else if (state == LIN) begin  // 16 iters
+      lin_conv_num <= lin_conv_num + 1;
     end
   end
-
-  assign valid_o = (state == FINISH);
-  assign data_o  = (state == FINISH) ? trial_output : 0;
 
   // Key overlay - combi logic
   logic [127:0] data_key_result;
@@ -113,11 +124,7 @@ module kuznechik_cipher (
   logic [7:0] data_galua_in  [15:0];
   logic       data_galua_sel;
 
-
-  // Achtung! Shift register should be added here
-
-
-  assign data_galua_in = data_non_linear_result;
+  assign data_galua_in = (lin_conv_num == 0) ? data_non_linear_result : data_galua_shreg_ff;
 
   logic [7:0] data_galua_result[15:0];
 
@@ -145,7 +152,7 @@ module kuznechik_cipher (
   logic [7:0] data_galua_shreg_next[15:0];
   logic       data_galua_shreg_en;
 
-  logic [3:0] lin_conv_num;
+  assign data_galua_shreg_en = (state == LIN);
 
   generate
 
@@ -157,11 +164,10 @@ module kuznechik_cipher (
       end
     end
 
-    // modulo 2 sum of galua multip result
     always_comb begin
       data_galua_shreg_next[15] = galua_summ;
       for (int i = 14; i >= 0; i--) begin
-        data_galua_shreg_next[i] = data_galua_shreg_ff[i+1];
+        data_galua_shreg_next[i] = data_galua_in[i+1];
       end
     end
 
@@ -171,10 +177,8 @@ module kuznechik_cipher (
       always_ff @(posedge clk_i, negedge resetn_i) begin
         if (~resetn_i) begin
           data_galua_shreg_ff[i] <= '0;
-          lin_conv_num <= '0;
         end else if (data_galua_shreg_en) begin
           data_galua_shreg_ff[i] <= data_galua_shreg_next[i];
-          lin_conv_num <= lin_conv_num + 1;
         end
       end
     end
