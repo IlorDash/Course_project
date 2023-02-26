@@ -39,43 +39,68 @@ module kuznechik_cipher (
     $readmemh("L_192.mem", L_mul_192_mem);
     $readmemh("L_194.mem", L_mul_194_mem);
     $readmemh("L_251.mem", L_mul_251_mem);
+
+    //round_num    = '0;
+    state = IDLE;
   end
 
 
-  logic [  3:0] trial_num_ff;
+  logic [3:0] state;
+  parameter IDLE = 0, KEY = 1, NON_LIN = 2, LIN = 3, FINISH = 4;
+
+  // Moore machine
+  always_ff @(posedge clk_i, negedge resetn_i) begin
+    if (~resetn_i) begin
+      state <= IDLE;
+      round_num <= 0;
+    end else begin
+      if (KEY && (round_num == 10)) begin
+        state <= FINISH;
+      end else
+      if (request_i && (state == IDLE)) begin
+        state <= KEY;
+      end else if (state == KEY) begin
+        state <= NON_LIN;
+      end else if (state == NON_LIN) begin
+        state <= LIN;  // 16 iters
+      end else if ((state == LIN) && (lin_conv_num == 15)) begin
+        state <= KEY;
+        round_num <= round_num + 1;
+      end
+    end
+  end
+
+  logic [  3:0] round_num;
   logic [127:0] trial_input_mux;
 
   logic [127:0] trial_output;
 
-  assign trial_num_ff    = '0;
-
-  assign trial_input_mux = (trial_num_ff == 0) ? data_i : trial_output;
+  assign trial_input_mux = (state = IDLE) ? data_i : trial_output;
 
   always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
-      trial_num_ff <= 0;
-    end else begin
-      trial_num_ff <= trial_num_ff + 1;
+      round_num <= 0;
+    end else if (state == LIN) begin
+      round_num <= round_num + 1;
     end
-
   end
 
-  assign valid_o = (trial_num_ff == 10);
-  assign data_o  = (trial_num_ff == 10) ? trial_output : 0;
+  assign valid_o = (state == FINISH);
+  assign data_o  = (state == FINISH) ? trial_output : 0;
 
-  // Key overlay
+  // Key overlay - combi logic
   logic [127:0] data_key_result;
 
   key_overlay my_key_overlay (
       .data_in(trial_input_mux),
-      .trial_num_in(trial_num_ff),
+      .trial_num_in(round_num),
       .key_mem_in(key_mem),
 
       .data_key_out(data_key_result)
   );
 
 
-  // Non-Linear overlay
+  // Non-Linear overlay - combi logic
 
   logic [7:0] data_non_linear_result[15:0];
 
@@ -123,6 +148,8 @@ module kuznechik_cipher (
   logic [7:0] data_galua_shreg_next[15:0];
   logic       data_galua_shreg_en;
 
+  logic [3:0] lin_conv_num;
+
   generate
 
     // modulo 2 sum of galua multip result
@@ -146,9 +173,11 @@ module kuznechik_cipher (
     for (genvar i = 0; i < 16; i++) begin
       always_ff @(posedge clk_i, negedge resetn_i) begin
         if (~resetn_i) begin
-          data_galua_shreg_ff[i] = '0;
+          data_galua_shreg_ff[i] <= '0;
+          lin_conv_num <= '0;
         end else if (data_galua_shreg_en) begin
-          data_galua_shreg_ff[i] = data_galua_shreg_next[i];
+          data_galua_shreg_ff[i] <= data_galua_shreg_next[i];
+          lin_conv_num <= lin_conv_num + 1;
         end
       end
     end
