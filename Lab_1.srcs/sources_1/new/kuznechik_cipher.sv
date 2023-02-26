@@ -50,8 +50,8 @@ module kuznechik_cipher (
   assign trial_num_ff    = '0;
 
   assign trial_input_mux = (trial_num_ff == 0) ? data_i : trial_output;
-  
-    always_ff @(posedge clk_i, negedge resetn_i) begin
+
+  always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
       trial_num_ff <= 0;
     end else begin
@@ -64,26 +64,27 @@ module kuznechik_cipher (
   assign data_o  = (trial_num_ff == 10) ? trial_output : 0;
 
   // Key overlay
-  logic [127:0] round_key;
-  assign round_key = key_mem[trial_num_ff];
-
   logic [127:0] data_key_result;
 
-  assign data_key_result = trial_input_mux ^ round_key;
-  
+  key_overlay my_key_overlay (
+      .data_in(trial_input_mux),
+      .trial_num_in(trial_num_ff),
+      .key_mem_in(key_mem),
+
+      .data_key_out(data_key_result)
+  );
 
 
   // Non-Linear overlay
-  logic [7:0] data_key_result_bytes [15:0];
+
   logic [7:0] data_non_linear_result[15:0];
 
-  generate
-    for (genvar i = 0; i < 16; i++) begin
-      assign data_key_result_bytes[i] = data_key_result[((i+1)*8)-1:(i*8)];   //  convert bits to bytes for extracting nums from S box
-      assign data_non_linear_result[i] = S_box_mem[data_key_result_bytes[i]];
-    end
-  endgenerate
+  non_linear_overlay my_non_linear_overlay (
+      .data_in(data_key_result),
+      .S_box_mem_in(S_box_mem),
 
+      .data_non_linear_out(data_non_linear_result)
+  );
 
   // Galua overlay
 
@@ -124,7 +125,7 @@ module kuznechik_cipher (
 
   generate
 
-    // modulo 2 sum
+    // modulo 2 sum of galua multip result
     always_comb begin
       galua_summ = '0;
       for (int i = 0; i < 16; i++) begin
@@ -132,6 +133,7 @@ module kuznechik_cipher (
       end
     end
 
+    // modulo 2 sum of galua multip result
     always_comb begin
       data_galua_shreg_next[15] = galua_summ;
       for (int i = 14; i >= 0; i--) begin
@@ -139,6 +141,8 @@ module kuznechik_cipher (
       end
     end
 
+
+    // 16 iterations of linear conversion
     for (genvar i = 0; i < 16; i++) begin
       always_ff @(posedge clk_i, negedge resetn_i) begin
         if (~resetn_i) begin
@@ -149,6 +153,7 @@ module kuznechik_cipher (
       end
     end
 
+    // converting shifted right bytes into bits for next round
     for (genvar i = 0; i < 16; i++) begin
       assign trial_output[((i+1)*8)-1:(i*8)] = data_galua_shreg_ff[i];
     end
