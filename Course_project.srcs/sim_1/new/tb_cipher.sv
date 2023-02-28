@@ -1,4 +1,4 @@
-module testbench();
+module tb_cipher();
 
     logic [127:0] data_to_cipher [11];
     logic [127:0] ciphered_data  [11];
