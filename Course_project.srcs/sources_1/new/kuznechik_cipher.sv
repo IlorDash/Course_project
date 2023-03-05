@@ -1,18 +1,18 @@
 `timescale 1ns / 1ps
 
 module kuznechik_cipher (
-    input clk_i,  // Тактовый сигнал
-    input                    resetn_i,   // Синхронный сигнал сброса с активным уровнем LOW
-    input request_i,  // Сигнал запроса на начало шифрования
-    input                    ack_i,      // Сигнал подтверждения приема зашифрованных данных
-    input [127:0] data_i,  // Шифруемые данные
+    input         clk_i,      // Clock signal
+    input         resetn_i,   // Synchronous reset signal with active LOW level
+    input         request_i,  // Signal of the request to start encryption
+    input         ack_i,      // Confirmation signal for receiving encrypted data
+    input [127:0] data_i,     // Data to encrypt
 
-    output busy_o,  // Сигнал, сообщающий о невозможности приёма
-                    // очередного запроса на шифрование, поскольку
-                    // модуль в процессе шифрования предыдущего
-                    // запроса
-    output       logic          valid_o,    // Сигнал готовности зашифрованных данных
-    output logic [127:0] data_o  // Зашифрованные данные
+    output               busy_o,   // Signal indicating that reception is impossible
+                                   // the next encryption request, because
+                                   // the module is in the process of encrypting the previous one
+                                   // request
+    output logic         valid_o,  // Encrypted data readiness signal
+    output logic [127:0] data_o    // Encrypted data
 );
 
 
