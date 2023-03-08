@@ -50,10 +50,13 @@ module kuznechik_cipher_apb_wrapper (
   assign cipher_data_in = {data_in_regs[3], data_in_regs[2], data_in_regs[1], data_in_regs[0]};
 
   logic [127:0] cipher_data_out;
-  assign data_out_regs[0] = cipher_data_out[127:96];
-  assign data_out_regs[1] = cipher_data_out[95:64];
-  assign data_out_regs[2] = cipher_data_out[63:32];
-  assign data_out_regs[3] = cipher_data_out[31:0];
+
+  always_ff @(posedge cipher_valid) begin
+    data_out_regs[0] <= cipher_data_out[127:96];
+    data_out_regs[1] <= cipher_data_out[95:64];
+    data_out_regs[2] <= cipher_data_out[63:32];
+    data_out_regs[3] <= cipher_data_out[31:0];
+  end
 
   logic cipher_busy;
   logic cipher_valid;
