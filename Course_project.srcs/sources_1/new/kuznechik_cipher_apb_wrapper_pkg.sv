@@ -10,8 +10,8 @@ package kuznechik_cipher_apb_wrapper_pkg;
   //    0x02 - VALID
   //    0x03 - BUSY
 
-  // 0x04 - 0x13 - data_in
-  // 0x04 - 0x13 - data_out
+  // 0x04 - 0x13 - DATA_IN
+  // 0x04 - 0x13 - DATA_OUT
 
   typedef enum {
     CONTROL  = 32'h0000,
@@ -25,5 +25,19 @@ package kuznechik_cipher_apb_wrapper_pkg;
     VALID   = 2,
     BUSY    = 3
   } cipher_control_t;
+
+  typedef enum {
+    DATA_IN_0 = 32'h0004,
+    DATA_IN_1 = 32'h0008,
+    DATA_IN_2 = 32'h000C,
+    DATA_IN_3 = 32'h0010
+  } cipher_data_in_t;
+
+  typedef enum {
+    DATA_OUT_0 = 32'h0014,
+    DATA_OUT_1 = 32'h0018,
+    DATA_OUT_2 = 32'h001C,
+    DATA_OUT_3 = 32'h0020
+  } cipher_data_out_t;
 
 endpackage
