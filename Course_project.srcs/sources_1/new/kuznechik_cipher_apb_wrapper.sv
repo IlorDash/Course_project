@@ -52,10 +52,10 @@ module kuznechik_cipher_apb_wrapper (
   logic [127:0] cipher_data_out;
 
   always_ff @(posedge cipher_valid) begin
-    data_out_regs[0] <= cipher_data_out[127:96];
-    data_out_regs[1] <= cipher_data_out[95:64];
-    data_out_regs[2] <= cipher_data_out[63:32];
-    data_out_regs[3] <= cipher_data_out[31:0];
+    data_out_regs[0] <= cipher_data_out[31:0];
+    data_out_regs[1] <= cipher_data_out[63:32];
+    data_out_regs[2] <= cipher_data_out[95:64];
+    data_out_regs[3] <= cipher_data_out[127:96];
   end
 
   logic cipher_busy;
