@@ -84,12 +84,19 @@ module kuznechik_cipher (
   always_ff @(posedge clk_i, negedge resetn_i) begin
     if (~resetn_i) begin
       round_num <= 0;
-      lin_conv_num <= '0;
     end else if (state == IDLE) begin
       round_num <= '0;
-      lin_conv_num <= '0;
     end else if ((state == LIN) && lin_conv_passed) begin
       round_num <= round_num + 1;
+    end
+  end
+
+  always_ff @(posedge clk_i, negedge resetn_i) begin
+    if (~resetn_i) begin
+      lin_conv_num <= '0;
+    end else if (state == IDLE) begin
+      lin_conv_num <= '0;
+    end else if ((state == LIN) && lin_conv_passed) begin
       lin_conv_num <= '0;
     end else if (state == LIN) begin  // 16 iters
       lin_conv_num <= lin_conv_num + 1;
