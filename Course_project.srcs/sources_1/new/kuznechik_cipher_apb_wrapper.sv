@@ -85,39 +85,29 @@ module kuznechik_cipher_apb_wrapper (
     pslverr_o <= 0;
     case (paddr_i)
       CONTROL: begin
-
-        if (pstrb_i[RST]) begin
-          if (pwrite_i) begin
+        if (pwrite_i) begin
+          if (pstrb_i[RST]) begin
             control_reg[RST] <= pwdata_i[RST];
-          end else begin
-            prdata_o[(8*(RST+1))-1:8*(RST)] <= control_reg[RST];
           end
-        end
 
-        if (pstrb_i[REQ_ACK]) begin
-          if (pwrite_i) begin
+          if (pstrb_i[REQ_ACK]) begin
             control_reg[REQ_ACK] <= pwdata_i[REQ_ACK];
-          end else begin
-            prdata_o[(8*(REQ_ACK+1))-1:8*(REQ_ACK)] <= control_reg[REQ_ACK];
           end
-        end
 
-        if (pstrb_i[VALID]) begin
-          if (pwrite_i) begin
+          if (pstrb_i[VALID]) begin
             pslverr_o <= 1;
-          end else begin
-            prdata_o[(8*(VALID+1))-1:8*(VALID)] <= control_reg[VALID];
           end
-        end
 
-        if (pstrb_i[BUSY]) begin
-          if (pwrite_i) begin
+          if (pstrb_i[BUSY]) begin
             pslverr_o <= 1;
-          end else begin
-            prdata_o[(8*(BUSY+1))-1:8*(BUSY)] <= control_reg[BUSY];
           end
-        end
 
+        end else begin
+          prdata_o[7:0]   <= control_reg[0];
+          prdata_o[15:8]  <= control_reg[1];
+          prdata_o[23:16] <= control_reg[2];
+          prdata_o[31:24] <= control_reg[3];
+        end
       end
       DATA_IN_0: begin
         if (pwrite_i) begin
