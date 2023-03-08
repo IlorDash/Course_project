@@ -55,15 +55,18 @@ module kuznechik_cipher_apb_wrapper (
   assign data_out_regs[2] = cipher_data_out[63:32];
   assign data_out_regs[3] = cipher_data_out[31:0];
 
+  logic cipher_busy;
+  logic cipher_valid;
+
   // Instantiation
   kuznechik_cipher cipher (
       .clk_i    (pclk_i),
       .resetn_i (cipher_resetn),
-      .request_i(control_reg[REQ_ACK]),
-      .ack_i    (control_reg[REQ_ACK]),
+      .request_i(control_reg[REQ_ACK][0]),
+      .ack_i    (control_reg[REQ_ACK][0]),
       .data_i   (cipher_data_in),
-      .busy_o   (control_reg[BUSY]),
-      .valid_o  (control_reg[VALID]),
+      .busy_o   (cipher_busy),
+      .valid_o  (cipher_valid),
       .data_o   (cipher_data_out)
   );
 
@@ -80,6 +83,11 @@ module kuznechik_cipher_apb_wrapper (
     end else if (pready_o && (paddr_i != CONTROL)) begin
       data_tx_cycle <= data_tx_cycle + 1;
     end
+  end
+
+  always_ff @(posedge pclk_i) begin
+    control_reg[BUSY]  = {8{cipher_busy}};
+    control_reg[VALID] = {8{cipher_valid}};
   end
 
   always_ff @(posedge pclk_i) begin
