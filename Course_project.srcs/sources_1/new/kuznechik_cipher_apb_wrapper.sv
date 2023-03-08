@@ -76,21 +76,12 @@ module kuznechik_cipher_apb_wrapper (
     pready_o <= psel_i;
   end
 
-  logic [1:0] data_tx_cycle;  // count words transfering with data registers
-  always_ff @(posedge pclk_i, posedge presetn_i) begin
-    if (presetn_i || !pready_o) begin
-      data_tx_cycle <= 0;
-    end else if (pready_o && (paddr_i != CONTROL)) begin
-      data_tx_cycle <= data_tx_cycle + 1;
-    end
-  end
-
   always_ff @(posedge pclk_i) begin
     control_reg[BUSY]  = {8{cipher_busy}};
     control_reg[VALID] = {8{cipher_valid}};
   end
 
-  always_ff @(posedge pclk_i) begin
+  always_ff @(posedge penable_i) begin
     pslverr_o <= 0;
     case (paddr_i)
       CONTROL: begin
@@ -126,29 +117,90 @@ module kuznechik_cipher_apb_wrapper (
             prdata_o[(8*(BUSY+1))-1:8*(BUSY)] <= control_reg[BUSY];
           end
         end
+
       end
-      DATA_IN: begin
+      DATA_IN_0: begin
         if (pwrite_i) begin
-          data_in_regs[data_tx_cycle][7:0]   <= pwdata_i[0];
-          data_in_regs[data_tx_cycle][15:8]  <= pwdata_i[1];
-          data_in_regs[data_tx_cycle][23:16] <= pwdata_i[2];
-          data_in_regs[data_tx_cycle][31:24] <= pwdata_i[3];
+          data_in_regs[0][7:0]   <= pwdata_i[0];
+          data_in_regs[0][15:8]  <= pwdata_i[1];
+          data_in_regs[0][23:16] <= pwdata_i[2];
+          data_in_regs[0][31:24] <= pwdata_i[3];
         end else begin
-          prdata_o <= data_in_regs[data_tx_cycle];
+          prdata_o <= data_in_regs[0];
         end
       end
-      DATA_OUT: begin
+
+      DATA_IN_1: begin
+        if (pwrite_i) begin
+          data_in_regs[1][7:0]   <= pwdata_i[0];
+          data_in_regs[1][15:8]  <= pwdata_i[1];
+          data_in_regs[1][23:16] <= pwdata_i[2];
+          data_in_regs[1][31:24] <= pwdata_i[3];
+        end else begin
+          prdata_o <= data_in_regs[1];
+        end
+      end
+
+      DATA_IN_2: begin
+        if (pwrite_i) begin
+          data_in_regs[2][7:0]   <= pwdata_i[0];
+          data_in_regs[2][15:8]  <= pwdata_i[1];
+          data_in_regs[2][23:16] <= pwdata_i[2];
+          data_in_regs[2][31:24] <= pwdata_i[3];
+        end else begin
+          prdata_o <= data_in_regs[2];
+        end
+      end
+
+      DATA_IN_3: begin
+        if (pwrite_i) begin
+          data_in_regs[3][7:0]   <= pwdata_i[0];
+          data_in_regs[3][15:8]  <= pwdata_i[1];
+          data_in_regs[3][23:16] <= pwdata_i[2];
+          data_in_regs[3][31:24] <= pwdata_i[3];
+        end else begin
+          prdata_o <= data_in_regs[3];
+        end
+      end
+
+      DATA_OUT_0: begin
         if (pwrite_i) begin
           pslverr_o <= 1;
         end else begin
-          prdata_o <= data_out_regs[data_tx_cycle];
+          prdata_o <= data_out_regs[0];
         end
       end
+
+      DATA_OUT_1: begin
+        if (pwrite_i) begin
+          pslverr_o <= 1;
+        end else begin
+          prdata_o <= data_out_regs[1];
+        end
+      end
+
+      DATA_OUT_2: begin
+        if (pwrite_i) begin
+          pslverr_o <= 1;
+        end else begin
+          prdata_o <= data_out_regs[2];
+        end
+      end
+
+      DATA_OUT_3: begin
+        if (pwrite_i) begin
+          pslverr_o <= 1;
+        end else begin
+          prdata_o <= data_out_regs[3];
+        end
+      end
+
       default: begin
         pslverr_o <= 0;
         prdata_o  <= 0;
       end
     endcase
   end
+
 
 endmodule
