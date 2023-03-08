@@ -91,42 +91,41 @@ module kuznechik_cipher_apb_wrapper (
   end
 
   always_ff @(posedge pclk_i) begin
+    pslverr_o <= 0;
     case (paddr_i)
       CONTROL: begin
-        case (pstrb_i)
-          RST: begin
-            if (pwrite_i) begin
-              control_reg[RST] <= pwdata_i[RST];
-            end else begin
-              prdata_o[(8*(RST+1))-1:8*(RST)] <= control_reg[RST];
-            end
+
+        if (pstrb_i[RST]) begin
+          if (pwrite_i) begin
+            control_reg[RST] <= pwdata_i[RST];
+          end else begin
+            prdata_o[(8*(RST+1))-1:8*(RST)] <= control_reg[RST];
           end
-          REQ_ACK: begin
-            if (pwrite_i) begin
-              control_reg[REQ_ACK] <= pwdata_i[REQ_ACK];
-            end else begin
-              prdata_o[(8*(REQ_ACK+1))-1:8*(REQ_ACK)] <= control_reg[REQ_ACK];
-            end
+        end
+
+        if (pstrb_i[REQ_ACK]) begin
+          if (pwrite_i) begin
+            control_reg[REQ_ACK] <= pwdata_i[REQ_ACK];
+          end else begin
+            prdata_o[(8*(REQ_ACK+1))-1:8*(REQ_ACK)] <= control_reg[REQ_ACK];
           end
-          VALID: begin
-            if (pwrite_i) begin
-              pslverr_o <= 1;
-            end else begin
-              prdata_o[(8*(VALID+1))-1:8*(VALID)] <= control_reg[VALID];
-            end
+        end
+
+        if (pstrb_i[VALID]) begin
+          if (pwrite_i) begin
+            pslverr_o <= 1;
+          end else begin
+            prdata_o[(8*(VALID+1))-1:8*(VALID)] <= control_reg[VALID];
           end
-          BUSY: begin
-            if (pwrite_i) begin
-              pslverr_o <= 1;
-            end else begin
-              prdata_o[(8*(BUSY+1))-1:8*(BUSY)] <= control_reg[BUSY];
-            end
+        end
+
+        if (pstrb_i[BUSY]) begin
+          if (pwrite_i) begin
+            pslverr_o <= 1;
+          end else begin
+            prdata_o[(8*(BUSY+1))-1:8*(BUSY)] <= control_reg[BUSY];
           end
-          default: begin
-            pslverr_o <= 0;
-            prdata_o  <= 0;
-          end
-        endcase
+        end
       end
       DATA_IN: begin
         if (pwrite_i) begin
@@ -151,6 +150,5 @@ module kuznechik_cipher_apb_wrapper (
       end
     endcase
   end
-
 
 endmodule
