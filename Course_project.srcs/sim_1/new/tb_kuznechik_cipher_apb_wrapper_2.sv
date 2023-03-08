@@ -392,6 +392,18 @@ module tb_kuznechik_cipher_apb_wrapper ();
   end
 
   // Main stimulus
+
+  typedef enum {
+    RESET = 0,
+    VALID_R_W_TEST = 1,
+    INVALID_R_W_TEST = 2,
+    WORK_11_TEST = 3,
+    INT_WORK_11_TEST = 4,
+    RESET_WORK_TEST = 5
+  } tests_names_t;
+
+  logic [2:0] curr_test;
+
   initial begin
     // Set data to cipher
     bit [10:0][127:0] data_to_cipher;
@@ -406,13 +418,22 @@ module tb_kuznechik_cipher_apb_wrapper ();
     data_to_cipher[08] = 128'h887adf8b545c4334e0070c63d2f344a3;
     data_to_cipher[09] = 128'h23feeb9115fab3e4f9739578010f212c;
     data_to_cipher[10] = 128'h53e0ebee97b0c1b8377ac5bce14cb4e8;
+
     fork
       begin
+        //bit [2:0] curr_test;
+
+        curr_test = RESET;
         reset();
+        curr_test = VALID_R_W_TEST;
         reg_valid_read_write_test(100);
+        curr_test = INVALID_R_W_TEST;
         reg_invalid_read_write_test(100);
+        curr_test = WORK_11_TEST;
         work_mode_test_word_11(1, data_to_cipher);
+        curr_test = INT_WORK_11_TEST;
         int_work_mode_test_word_11(1, data_to_cipher);
+        curr_test = RESET_WORK_TEST;
         reset_work_mode_test(5);
         $display("\nAll tests done");
       end
