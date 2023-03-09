@@ -333,17 +333,6 @@ module tb_kuznechik_cipher_apb_wrapper ();
         cipher_set_and_req(data_in[k]);
         // Set request again
         // Here we expecting slave error
-
-
-        ////////////////////////////////////////
-        /* 
-        Why we expect slave error here?
-        Are there any described reasons why slave error must happen
-        when two requests are send. Actually, when we request encrypt,
-        in respective reg already stored request.
-        */
-        ////////////////////////////////////////
-
         $display("Interrupting");
         set_cipher_control(control, 1'b1);
         // Get encrypted data
@@ -442,8 +431,8 @@ module tb_kuznechik_cipher_apb_wrapper ();
         reg_invalid_read_write_test(100);
         curr_test = WORK_11_TEST;
         work_mode_test_word_11(1, data_to_cipher);
-        //curr_test = INT_WORK_11_TEST;
-        //int_work_mode_test_word_11(1, data_to_cipher);
+        curr_test = INT_WORK_11_TEST;
+        int_work_mode_test_word_11(1, data_to_cipher);
         curr_test = RESET_WORK_TEST;
         reset_work_mode_test(5);
         $display("\nAll tests done");
