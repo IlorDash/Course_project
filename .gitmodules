@@ -1,0 +1,3 @@
+[submodule "pulpino_students"]
+	path = pulpino_students
+	url = https://github.com/Konf/pulpino_students
