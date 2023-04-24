@@ -1,3 +1,4 @@
 [submodule "pulpino_students"]
 	path = pulpino_students
 	url = https://github.com/IlorDash/pulpino_students.git
+	branch = fpga_pract
