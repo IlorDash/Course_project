@@ -7,6 +7,7 @@ module spi_accel_tb ();
   logic mosi;
   logic cs;
   logic [15:0] data;
+  logic data_ready;
 
   accel_spi_master master (
       .iclk(clk),
@@ -14,7 +15,8 @@ module spi_accel_tb ();
       .sclk(sclk),
       .mosi(mosi),
       .cs(cs),
-      .acl_data(data)
+      .acl_data(data),
+      .acl_data_ready(data_ready)
   );
 
   always begin

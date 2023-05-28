@@ -12,18 +12,19 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1841441000fs"></ZoomStartTime>
-      <ZoomEndTime time="1842426001fs"></ZoomEndTime>
-      <Cursor1Time time="1841675000fs"></Cursor1Time>
+      <ZoomStartTime time="2245922916fs"></ZoomStartTime>
+      <ZoomEndTime time="2246417417fs"></ZoomEndTime>
+      <Cursor1Time time="2246185000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="122"></ValueColumnWidth>
+      <ValueColumnWidth column_width="118"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="4" />
    <wvobject type="group" fp_name="group102">
       <obj_property name="label">APB</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/spi_accel_apb_tb/pclk_i">
          <obj_property name="ElementShortName">pclk_i</obj_property>
          <obj_property name="ObjectShortName">pclk_i</obj_property>
@@ -89,10 +90,33 @@
          <obj_property name="ElementShortName">state_reg[6:0]</obj_property>
          <obj_property name="ObjectShortName">state_reg[6:0]</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/spi_accel_apb_tb/DUT/data_ready_wire">
+         <obj_property name="ElementShortName">data_ready_wire</obj_property>
+         <obj_property name="ObjectShortName">data_ready_wire</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/spi_accel_apb_tb/DUT/read_data_ready">
+         <obj_property name="ElementShortName">read_data_ready</obj_property>
+         <obj_property name="ObjectShortName">read_data_ready</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/spi_accel_apb_tb/DUT/data_X">
+         <obj_property name="ElementShortName">data_X[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_X[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/spi_accel_apb_tb/DUT/data_Y">
+         <obj_property name="ElementShortName">data_Y[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_Y[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/spi_accel_apb_tb/DUT/data_Z">
+         <obj_property name="ElementShortName">data_Z[15:0]</obj_property>
+         <obj_property name="ObjectShortName">data_Z[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/spi_accel_apb_tb/DUT/data_ready_reg">
+         <obj_property name="ElementShortName">data_ready_reg[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_ready_reg[31:0]</obj_property>
+      </wvobject>
       <wvobject type="group" fp_name="group101">
          <obj_property name="label">SPI</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject type="logic" fp_name="/spi_accel_apb_tb/ACL_MISO">
             <obj_property name="ElementShortName">ACL_MISO</obj_property>
             <obj_property name="ObjectShortName">ACL_MISO</obj_property>
@@ -114,7 +138,6 @@
    <wvobject type="group" fp_name="group183">
       <obj_property name="label">ACCEL</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="group" fp_name="group187">
          <obj_property name="label">SPI</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -163,6 +186,10 @@
       <wvobject type="array" fp_name="/spi_accel_apb_tb/accelerometer/data_cntr">
          <obj_property name="ElementShortName">data_cntr[2:0]</obj_property>
          <obj_property name="ObjectShortName">data_cntr[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/spi_accel_apb_tb/accelerometer/REGS">
+         <obj_property name="ElementShortName">REGS[0:5][7:0]</obj_property>
+         <obj_property name="ObjectShortName">REGS[0:5][7:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

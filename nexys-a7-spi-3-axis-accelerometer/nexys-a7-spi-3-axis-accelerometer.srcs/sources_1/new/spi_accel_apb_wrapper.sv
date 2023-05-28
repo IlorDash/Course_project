@@ -4,9 +4,15 @@
 // SPI Accelerometer memory map //
 //////////////////////////////////
 
-// 0x00 - Data out register
+// 0x00 - Data X register
+// 0x04 - Data Y register
+// 0x08 - Data Z register
+// 0x0C - Data ready register
 
-`define DATA_OUT 32'h0000
+`define DATA_X 32'h0000
+`define DATA_Y 32'h0004
+`define DATA_Z 32'h0008
+`define DATA_READY 32'h000C
 
 module spi_accel_apb_wrapper (
 
@@ -44,7 +50,11 @@ module spi_accel_apb_wrapper (
   // Registers //
   ///////////////
 
-  logic [31:0] data_out_reg;
+  logic [15:0] data_X;
+  logic [15:0] data_Y;
+  logic [15:0] data_Z;
+  logic [31:0] data_ready_reg;
+  logic data_ready_wire;
 
   /////////////////////////////////////
   // SPI Accelerometer instantiation //
@@ -56,8 +66,20 @@ module spi_accel_apb_wrapper (
       .sclk(ACL_SCLK),
       .mosi(ACL_MOSI),
       .cs(ACL_CSN),
-      .acl_data(data_out_reg)
+      .X(data_X),
+      .Y(data_Y),
+      .Z(data_Z),
+      .acl_data_ready(data_ready_wire)
   );
+
+  // Data Ready Reg
+  always_ff @(posedge data_ready_wire, posedge read_data_ready) begin
+    if (data_ready_wire) begin
+      data_ready_reg <= {32{data_ready_wire}};
+    end else if (read_data_ready) begin
+      data_ready_reg <= 32'h0000;
+    end
+  end
 
   // Control
 
@@ -101,7 +123,7 @@ module spi_accel_apb_wrapper (
       pslverr_status <= PSEL_PREV;
     end
 
-    if (paddr_i > `DATA_OUT) begin  // Register at the address doesn't exist
+    if (paddr_i > `DATA_READY) begin  // Register at the address doesn't exist
       pslverr_o <= 1;
       pslverr_status <= ADDRES;
     end
@@ -112,15 +134,31 @@ module spi_accel_apb_wrapper (
     end
   end
 
+  logic read_data_ready;
+
   // READ REGS
   always_ff @(posedge penable_i) begin
     if (~pwrite_i) begin
       case (paddr_i)
-        32'h0000: begin
-          prdata_o <= data_out_reg;
+        `DATA_X: begin
+          prdata_o <= {{16'b0}, data_X};
+          read_data_ready <= 0;
+        end
+        `DATA_Y: begin
+          prdata_o <= {{16'b0}, data_Y};
+          read_data_ready <= 0;
+        end
+        `DATA_Z: begin
+          prdata_o <= {{16'b0}, data_Z};
+          read_data_ready <= 0;
+        end
+        `DATA_READY: begin
+          prdata_o <= data_ready_reg;
+          read_data_ready <= 1;
         end
         default: begin
           prdata_o <= 0;
+          read_data_ready <= 0;
         end
       endcase
     end

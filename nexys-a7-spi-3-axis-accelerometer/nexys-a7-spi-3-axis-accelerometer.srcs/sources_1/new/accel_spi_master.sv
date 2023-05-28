@@ -35,12 +35,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module accel_spi_master (
-    input             iclk,         // 4MHz
-    input             miso,         // master in
-    output            sclk,         // 1MHz
-    output reg        mosi = 1'b0,  // master out
-    output reg        cs = 1'b1,    // slave chip select
-    output     [14:0] acl_data      // 15 bit data, 5 each axis
+    input               iclk,           // 4MHz
+    input               miso,           // master in
+    output              sclk,           // 1MHz
+    output reg          mosi = 1'b0,    // master out
+    output reg          cs = 1'b1,      // slave chip select
+    output logic [15:0] X = 15'b0,      // X data MSB and LSB from sensor
+    output logic [15:0] Y = 15'b0,      // Y data MSB and LSB from sensor
+    output logic [15:0] Z = 15'b0,      // Z data MSB and LSB from sensor
+    output logic        acl_data_ready
 );
 
   // Control sclk output for spi mode
@@ -64,9 +67,6 @@ module accel_spi_master (
   reg [7:0] read_instr = 8'h0B;  // Sensor read instruction
   reg [7:0] x_LSB_addr    = 8'h0E;			// X data LSB address, auto-increments to following 5 data registers
   reg [14:0] temp_DATA = 15'b0;  // 15 bits, 5 bits for each axis		
-  reg [15:0] X = 15'b0;  // X data MSB and LSB from sensor
-  reg [15:0] Y = 15'b0;  // Y data MSB and LSB from sensor
-  reg [15:0] Z = 15'b0;  // Z data MSB and LSB from sensor
   reg [31:0] counter = 32'b0;  // State machine sync counter - 4000 ticks per ms at 4MHz
   wire latch_data;
 
@@ -642,6 +642,8 @@ module accel_spi_master (
 
   // Output accelerometer data
   assign acl_data = temp_DATA;
+
+  assign acl_data_ready = latch_data;
 
   assign latch_data = ((state_reg == END_SPI) && (counter == 32'd258)) ? 1 : 0;
   assign sclk = (sclk_control) ? clk_reg : 0;

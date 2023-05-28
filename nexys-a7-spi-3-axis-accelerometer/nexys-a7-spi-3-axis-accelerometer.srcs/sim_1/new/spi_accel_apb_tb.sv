@@ -1,15 +1,16 @@
 `timescale 1ns / 1ps
 
-`define DATA_OUT 32'h0000
+`define DATA_X 32'h0000
+`define DATA_Y 32'h0004
+`define DATA_Z 32'h0008
+`define DATA_READY 32'h000C
 
-typedef enum {
-  VALID_R_TEST   = 0
-} tests_names_t;
+typedef enum {VALID_R_TEST = 0} tests_names_t;
 
 module spi_accel_apb_tb ();
 
   // Clock period
-  parameter real CLK_PERIOD = 10;   // 100 MHz
+  parameter real CLK_PERIOD = 10;  // 100 MHz
 
   // Test timeout (clock periods)
   parameter TEST_TIMEOUT = 10000000;
@@ -103,22 +104,38 @@ module spi_accel_apb_tb ();
     penable_i <= 1'b0;
   endtask
 
-  task get_cipher_data_out(output bit [31:0] data, input bit pslverr);
-    exec_apb_read_trans(`DATA_OUT, data, pslverr);
+  task get_cipher_data_out(output bit [31:0] data[3:0], input bit pslverr);
+    for (int i = 0; i < 4; i = i + 1) begin
+      exec_apb_read_trans(`DATA_X + 4 * i, data[i], pslverr);
+    end
+
   endtask
 
   // Tests
 
-  task data_out_reg_valid_read_test(int iterations = 10);
-    bit [31:0] data_out;
+  task data_reg_valid_read_test(int iterations = 10);
+    bit [31:0] data_out[3:0];
     $display("\nStarting valid read (%0d iterations)", iterations);
     for (int i = 0; i < iterations; i = i + 1) begin
       $display("Iteration %0d", i);
       get_cipher_data_out(data_out, 1'b0);
-      if (data_out == 0) begin
-        $error("DATA_OUT is ZERO: %h", data_out);
+      if (data_out[0] == 0) begin
+        $error("DATA_X is ZERO: %h", data_out[0]);
         $stop();
       end
+      if (data_out[1] == 0) begin
+        $error("DATA_Y is ZERO: %h", data_out[1]);
+        $stop();
+      end
+      if (data_out[2] == 0) begin
+        $error("DATA_Z is ZERO: %h", data_out[2]);
+        $stop();
+      end
+      if (data_out[3] == 0) begin
+        $error("DATA_READY is ZERO: %h", data_out[3]);
+        $stop();
+      end
+      #402600;  // wait to SPI transaction end
     end
   endtask
 
@@ -128,8 +145,8 @@ module spi_accel_apb_tb ();
     fork
       begin
         curr_test = VALID_R_TEST;
-        #20000000; // wait to SPI transaction end
-        data_out_reg_valid_read_test(100);
+        #1843595;  // wait to init and SPI transaction end
+        data_reg_valid_read_test(100);
         $display("\nAll tests done");
       end
       begin
