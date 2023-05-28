@@ -20,7 +20,7 @@ module top(
         .clk_4MHz(w_4MHz)
     );
     
-    spi_master master(
+    accel_spi_master master(
         .iclk(w_4MHz),
         .miso(ACL_MISO),
         .sclk(ACL_SCLK),

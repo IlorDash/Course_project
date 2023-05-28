@@ -34,7 +34,7 @@
 //			- 0x0D : read FIFO (for more information on the FIFO, see the datasheet)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-module spi_master (
+module accel_spi_master (
     input             iclk,         // 4MHz
     input             miso,         // master in
     output            sclk,         // 1MHz
