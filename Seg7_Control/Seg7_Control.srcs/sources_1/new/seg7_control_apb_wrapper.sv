@@ -70,17 +70,14 @@ module seg7_apb_wrapper (
   // 7-Segment control instantiation //
   /////////////////////////////////////
 
-  logic seg7_resetn;
-  assign seg7_resetn = presetn_i && reset_reg[0];
-
-  logic [`CATH_NUM-1:0] cath;
-  assign cath = {cg, cf, ce, cd, cc, cb, ca};
+  logic seg7_reset;
+  assign seg7_reset = reset_reg[0];
 
   seg7_control my_disp (
       .clk_i(pclk_i),
       .num(num_reg),
-      .rst(seg7_resetn),
-      .cath(cath),
+      .rst(seg7_reset),
+      .cath({cg, cf, ce, cd, cc, cb, ca}),
       .an(an)
   );
 
@@ -104,7 +101,7 @@ module seg7_apb_wrapper (
     MISALIGN = 8
   } pslverr_causes_t;
 
-  logic [2:0] pslverr_status;
+  pslverr_causes_t pslverr_status;
 
   always_comb begin
     pslverr_o <= 0;
@@ -160,8 +157,8 @@ module seg7_apb_wrapper (
           reset_reg[31:24] <= pwdata_i[3];
         end
         default: begin
-          num_reg <= 32'b0;
-          reset_reg   <= 32'b0;
+          num_reg   <= 32'b0;
+          reset_reg <= 32'b0;
         end
       endcase
     end
